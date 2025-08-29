@@ -1,0 +1,30 @@
+class Solution {
+public:
+    bool canCross(vector<int>& stones) {
+         int n = stones.size();
+
+        // Map: stone_position -> set of jump sizes that can reach here
+        unordered_map<int, unordered_set<int>> dp;
+
+        // The frog starts at stone 0 with jump size 0
+        dp[0].insert(0);
+
+        for (int stone : stones) {
+            for (int jump : dp[stone]) {
+                // Next possible jumps: k-1, k, k+1
+                for (int step = jump - 1; step <= jump + 1; step++) {
+                    if (step > 0) {
+                        int nextStone = stone + step;
+                        // If nextStone exists, store the jump size
+                        if (find(stones.begin(), stones.end(), nextStone) != stones.end()) {
+                            dp[nextStone].insert(step);
+                        }
+                    }
+                }
+            }
+        }
+
+        // If last stone has any valid jumps, return true
+        return !dp[stones.back()].empty();
+    }
+};
