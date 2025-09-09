@@ -1,0 +1,45 @@
+class Solution {
+public:
+int n,m;
+vector<vector<int>> dirs={{1,0},{-1,0},{0,1},{0,-1}};
+    vector<vector<int>> colorBorder(vector<vector<int>>& grid, int row, int col, int color) {
+          m = grid.size();
+        n = grid[0].size();
+        int originalColor = grid[row][col];
+
+        vector<vector<int>> visited(m,vector<int>(n,0));
+        vector<pair<int,int>>borders;
+
+        dfs(grid, row, col, originalColor, visited, borders);
+
+        for (auto &cell : borders) {
+            grid[cell.first][cell.second] = color;
+        }
+
+        return grid;
+    }
+     void dfs(vector<vector<int>>& grid, int i, int j, int color,
+             vector<vector<int>>& visited, vector<pair<int,int>>& borders) {
+        visited[i][j] = 1;
+        bool isBorder = false;
+
+        for (auto &d : dirs) {
+            int x = i + d[0], y = j + d[1];
+
+            if (x < 0 || y < 0 || x >= m || y >= n) {
+                // touches boundary
+                isBorder = true;
+            } else if (grid[x][y] != color) {
+                // adjacent to different color
+                isBorder = true;
+            } else if (!visited[x][y]) {
+                dfs(grid, x, y, color, visited, borders);
+            }
+        }
+
+        if (isBorder) {
+            borders.push_back({i, j});
+        }
+    
+    }
+};
