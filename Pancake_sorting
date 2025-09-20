@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> pancakeSort(vector<int>& arr) {
+       vector<int> result;
+        int n = arr.size();
+        
+        for (int size = n; size > 1; size--) {
+            // Find index of largest element in arr[0..size-1]
+            int maxIndex = max_element(arr.begin(), arr.begin() + size) - arr.begin();
+            
+            if (maxIndex == size - 1) continue; // already in correct place
+            
+            // Step 1: Bring max to front (if not already)
+            if (maxIndex != 0) {
+                reverse(arr.begin(), arr.begin() + maxIndex + 1);
+                result.push_back(maxIndex + 1);
+            }
+            
+            // Step 2: Bring max to its correct position
+            reverse(arr.begin(), arr.begin() + size);
+            result.push_back(size);
+        }
+        return result;  
+    }
+};
