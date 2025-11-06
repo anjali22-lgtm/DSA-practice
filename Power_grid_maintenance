@@ -1,0 +1,61 @@
+class Solution {
+public:
+    vector<int> processQueries(int c, vector<vector<int>>& connections, vector<vector<int>>& queries) {
+    
+        vector<int> parent(c + 1);
+        for (int i = 1; i <= c; ++i)
+            parent[i] = i;
+
+      
+        function<int(int)> find = [&](int u) {
+            return parent[u] == u ? u : parent[u] = find(parent[u]);
+        };
+
+        // Union operation
+        auto unite = [&](int u, int v) {
+            int pu = find(u), pv = find(v);
+            if (pu != pv)
+                parent[pu] = pv;
+        };
+
+      
+        for (const auto& edge : connections)
+            unite(edge[0], edge[1]);
+
+        
+        for (int i = 1; i <= c; ++i)
+            find(i);
+
+       
+        unordered_map<int, set<int>> online;
+        for (int i = 1; i <= c; ++i)
+            online[find(i)].insert(i);
+
+        vector<int> res;
+        vector<bool> isOnline(c + 1, true);  
+
+        for (const auto& q : queries) {
+            int type = q[0], x = q[1];
+            int group = find(x);
+
+            if (type == 1) {
+                if (isOnline[x]) {
+                    res.push_back(x);
+                } else {
+                    if (online[group].empty())
+                        res.push_back(-1);
+                    else
+                        res.push_back(*online[group].begin());  // smallest online in group
+                }
+            } else if (type == 2) {
+                if (isOnline[x]) {
+                    isOnline[x] = false;
+                    online[group].erase(x);  // Remove from online set
+                }
+            }
+        }
+
+        return res;
+        
+    }
+};
