@@ -1,0 +1,50 @@
+You are given an array nums of size n, consisting of non-negative integers. Your task is to apply some (possibly zero) operations on the array so that all elements become 0.
+
+In one operation, you can select a subarray [i, j] (where 0 <= i <= j < n) and set all occurrences of the minimum non-negative integer in that subarray to 0.
+
+Return the minimum number of operations required to make all elements in the array 0.
+
+ 
+
+Example 1:
+
+Input: nums = [0,2]
+
+Output: 1
+
+Explanation:
+
+Select the subarray [1,1] (which is [2]), where the minimum non-negative integer is 2. Setting all occurrences of 2 to 0 results in [0,0].
+Thus, the minimum number of operations required is 1.
+
+
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums) {
+      nums.push_back(0);
+        std::vector<int> stack; 
+        int count = 0; 
+        for (int i = 0; i < nums.size(); i++){
+            
+            while (!stack.empty()){
+                if (nums[i] > stack.back()){
+                    stack.push_back(nums[i]);
+                    break; 
+                }
+                else if (nums[i] < stack.back()){
+                    stack.pop_back();
+                    count++; 
+                }
+                else{
+                    break; 
+                }
+            }
+            if (stack.empty() && nums[i]!= 0){
+                stack.push_back(nums[i]);
+            }
+        
+        }
+        return count;   
+    }
+};
